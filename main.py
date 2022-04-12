@@ -1,10 +1,14 @@
-''' This bot is here to cheer you up. Key words will prompt it to send encouraging messages
+'''
+This bot is here to cheer you up. Key words will prompt it to send encouraging messages
 Use the following commands:
  - !hello to greet the bot
  - !inspire to recieve an inspirational quote
  - !add + message to add a new encouragement
  - !reveal to see all saved encouragements in the db
- - !yeet + index to delete an encouragement from the db '''
+ - !yeet + index to delete an encouragement from the db
+
+Affirming or scolding the bot will also prompt a response
+'''
 
 import os
 import discord
@@ -15,7 +19,9 @@ from replit import db
 
 client = discord.Client()
 
+# sad words that trigger bot response
 sad_words = ["I'm sad", "depressed", "unhappy", "angry", "pissed", "miserable", "depressing", "big oof", "lonely", "heartbroken", "disapointed", "hopeless", "I'm lost"]
+
 # beyond starter encouragements, users can add aditional nice things to the database through discord commands
 starter_encouragements = [
   "You're doing fine sweetie! We love you!",
@@ -24,6 +30,11 @@ starter_encouragements = [
   "XOXOXO",
   "Hang in there! You are beautiful!"
 ]
+# tell bot it did a good job
+good_bot = ["good bot", "good optibot", "thank you bot", "thank you optibot"]
+# tell bo it did a bad job
+bad_bot = ["bad bot", "bad optibot", "no bot", "no optibot", "not you bot", "not you optibot"]
+
 # quotes pulled from zenquotes API
 def get_quote():
   response = requests.get("https://zenquotes.io/api/random")
@@ -50,7 +61,7 @@ def delete_encouragement(index):
 # successful startup prompt 
 @client.event
 async def on_ready():
-  print('We have logged in as {0.user}'.format(client))
+  print('{0.user} is alive!!'.format(client))
 
 @client.event
 async def on_message(message):
@@ -58,7 +69,9 @@ async def on_message(message):
   if message.author == client.user:
     return
 
+  # messages converted to lower case
   msg = message.content.lower()
+  
   # commands
   if msg.startswith('!hello'):
     await message.channel.send('Hello beautiful!')
@@ -95,10 +108,10 @@ async def on_message(message):
       await message.channel.send(str(i) + ": " + encouragements[i] + "\n")
     await message.channel.send("To delete a message, type $yeet + index.")
 
-  if msg.startswith("thank you bot"):
+  if any(word in msg for word in good_bot):
     await message.channel.send("^w^")
 
-  if msg.startswith("not you optibot"):
+  if any(word in msg for word in bad_bot):
     await message.channel.send(":(")
     
 client.run(os.environ['TOKEN'])
