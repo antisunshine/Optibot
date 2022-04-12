@@ -30,6 +30,7 @@ def get_quote():
   json_data = json.loads(response.text)
   quote = "\"" + json_data[0]['q'] + "\"" + "\n-" + json_data[0]['a']
   return quote
+  
 # checks if encouragement exists
 def update_encouragements(encouraging_message):
   if "encouragements" in db.keys():
@@ -38,12 +39,14 @@ def update_encouragements(encouraging_message):
     db["encouragements"] = encouragements
   else:
     db["encouragements"] = [encouraging_message]
+    
 # deletes selected encouragement
 def delete_encouragement(index):
   encouragements = db["encouragements"]
   if len(encouragements) > index:
     del encouragements[index]
   db["encouragements"] = encouragements
+  
 # successful startup prompt 
 @client.event
 async def on_ready():
@@ -55,7 +58,7 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-  msg = message.content
+  msg = message.content.lower()
   # commands
   if msg.startswith('!hello'):
     await message.channel.send('Hello beautiful!')
@@ -92,10 +95,10 @@ async def on_message(message):
       await message.channel.send(str(i) + ": " + encouragements[i] + "\n")
     await message.channel.send("To delete a message, type $yeet + index.")
 
-  if msg.startswith("Thank you bot"):
+  if msg.startswith("thank you bot"):
     await message.channel.send("^w^")
 
-  if msg.startswith("Not you Optibot"):
+  if msg.startswith("not you optibot"):
     await message.channel.send(":(")
     
 client.run(os.environ['TOKEN'])
