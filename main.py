@@ -89,9 +89,10 @@ async def on_message(message):
 
   if msg.startswith("!reveal"):
     encouragements = list(db["encouragements"])
+    temp = ""
     for i in range(len(encouragements)):
-      await message.channel.send(str(i) + ": " + encouragements[i] + "\n")
-    await message.channel.send("To delete a message, type $yeet + index.")
+      temp += str(i) + ": " + encouragements[i] + "\n"
+    await message.channel.send(temp + "\n\nTo delete a message, type !yeet + index.")
 
   if msg.startswith("!new"):
     encouraging_message = msg.split("$new ", 1)[1]
@@ -100,13 +101,14 @@ async def on_message(message):
 
   if msg.startswith("!yeet"):
     encouragements = []
+    temp = ""
     if "encouragements" in db.keys():
-      index = int(msg.split("$yeet ", 1)[1])
+      index = int(msg.split("!yeet ", 1)[1])
       delete_encouragement(index)
       encouragements = db["encouragements"]
     for i in range(len(encouragements)):
-      await message.channel.send(str(i) + ": " + encouragements[i] + "\n")
-    await message.channel.send("To delete a message, type $yeet + index.")
+      temp += str(i) + ": " + encouragements[i] + "\n"
+    await message.channel.send(temp + "\n\nTo delete a message, type !yeet + index.")
 
   if any(word in msg for word in good_bot):
     await message.channel.send("^w^")
